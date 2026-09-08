@@ -1,0 +1,5 @@
+res://Scenes/Enemy.tscn
+res://Scripts/radio.gd
+res://RadioMessages/radio_message.gd
+res://Scenes/radio.tscn
+res://Scenes/node_2d.tscn

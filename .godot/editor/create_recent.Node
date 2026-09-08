@@ -1,0 +1,14 @@
+HBoxContainer
+Control
+AnimatedSprite2D
+CanvasLayer
+Label
+Node2D
+TileMapLayer
+AnimationPlayer
+TextureRect
+NinePatchRect
+RichTextLabel
+Sprite2D
+Node
+Area2D
