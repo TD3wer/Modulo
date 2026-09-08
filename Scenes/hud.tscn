@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://c3d4665tuguc0"]
+
+[ext_resource type="Script" uid="uid://bhlym4pbcqoo8" path="res://Scripts/hud.gd" id="1_e0onf"]
+[ext_resource type="Texture2D" uid="uid://6qadefgfrkv0" path="res://Assets/HUD/Heart.png" id="2_fccik"]
+[ext_resource type="FontFile" uid="uid://c4ls55ik8e4rx" path="res://Assets/pixel_operator/PixelOperator8.ttf" id="3_bjfho"]
+
+[sub_resource type="Theme" id="Theme_fccik"]
+default_font = ExtResource("3_bjfho")
+default_font_size = 8
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_e0onf")
+heart_texture = ExtResource("2_fccik")
+
+[node name="HeartsContainer" type="HBoxContainer" parent="."]
+offset_left = 160.0
+offset_top = 1.0
+offset_right = 247.0
+offset_bottom = 10.0
+
+[node name="TimerLabel" type="Label" parent="."]
+offset_left = 125.0
+offset_top = 2.0
+offset_right = 182.0
+offset_bottom = 25.0
+theme = SubResource("Theme_fccik")

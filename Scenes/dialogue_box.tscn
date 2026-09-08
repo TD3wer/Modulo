@@ -1,0 +1,77 @@
+[gd_scene load_steps=12 format=3 uid="uid://kticli83u6xj"]
+
+[ext_resource type="FontFile" uid="uid://c4ls55ik8e4rx" path="res://Assets/pixel_operator/PixelOperator8.ttf" id="1_0nste"]
+[ext_resource type="Script" uid="uid://bn5h8tsygnck2" path="res://Scripts/dialogue_box.gd" id="1_if77y"]
+[ext_resource type="Texture2D" uid="uid://bfhkcwr1r4rwk" path="res://Assets/UI/UI.png" id="2_if77y"]
+[ext_resource type="Texture2D" uid="uid://dqc2jfj0nn0oh" path="res://Assets/UI/cable.png" id="3_351bv"]
+[ext_resource type="FontFile" uid="uid://c4hmq6jebrlou" path="res://Assets/pixel_operator/PixelOperator8-Bold.ttf" id="4_85jfh"]
+[ext_resource type="Script" uid="uid://ygrgoaipsmu6" path="res://Scripts/Wave text effect.gd" id="4_351bv"]
+[ext_resource type="Script" uid="uid://d1iqrgylfn067" path="res://Scripts/Shake text.gd" id="6_med3p"]
+
+[sub_resource type="Theme" id="Theme_85jfh"]
+default_font = ExtResource("1_0nste")
+default_font_size = 8
+
+[sub_resource type="FontVariation" id="FontVariation_85jfh"]
+base_font = ExtResource("4_85jfh")
+spacing_top = 2
+spacing_bottom = 2
+
+[sub_resource type="RichTextEffect" id="RichTextEffect_85jfh"]
+script = ExtResource("4_351bv")
+metadata/_custom_type_script = "uid://ygrgoaipsmu6"
+
+[sub_resource type="RichTextEffect" id="RichTextEffect_f71wr"]
+script = ExtResource("6_med3p")
+metadata/_custom_type_script = "uid://d1iqrgylfn067"
+
+[node name="DialogueBox" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_if77y")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 142.0
+offset_right = 318.62134
+offset_bottom = 179.0
+scale = Vector2(1.0011959, 1)
+texture = ExtResource("2_if77y")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="NinePatchRect"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 4.994027
+offset_top = 6.0
+offset_right = 314.62375
+offset_bottom = 29.0
+theme = SubResource("Theme_85jfh")
+theme_override_fonts/bold_font = SubResource("FontVariation_85jfh")
+scroll_active = false
+custom_effects = [SubResource("RichTextEffect_85jfh"), SubResource("RichTextEffect_f71wr")]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 172.0
+offset_right = 88.0
+offset_bottom = 180.0
+texture = ExtResource("3_351bv")
+stretch_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 246.0
+offset_top = 172.0
+offset_right = 262.0
+offset_bottom = 180.0
+texture = ExtResource("3_351bv")
+stretch_mode = 2
+flip_h = true

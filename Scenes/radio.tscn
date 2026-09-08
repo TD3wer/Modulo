@@ -1,0 +1,108 @@
+[gd_scene load_steps=12 format=3 uid="uid://cvuajuutl6v47"]
+
+[ext_resource type="Texture2D" uid="uid://dtpih0gv7o36n" path="res://Assets/Radio/Broadcasting.png" id="1_bdbpc"]
+[ext_resource type="Script" uid="uid://b12b52cl6wuvm" path="res://Scripts/radio.gd" id="1_ygha7"]
+[ext_resource type="Texture2D" uid="uid://cfiqnjh0lt6dc" path="res://Assets/Radio/Idle.png" id="2_ibud7"]
+[ext_resource type="PackedScene" uid="uid://kticli83u6xj" path="res://Scenes/dialogue_box.tscn" id="3_ibud7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ygha7"]
+atlas = ExtResource("1_bdbpc")
+region = Rect2(0, 0, 17, 33)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y4nnh"]
+atlas = ExtResource("1_bdbpc")
+region = Rect2(17, 0, 17, 33)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jp436"]
+atlas = ExtResource("1_bdbpc")
+region = Rect2(34, 0, 17, 33)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_geon2"]
+atlas = ExtResource("1_bdbpc")
+region = Rect2(51, 0, 17, 33)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3asvo"]
+atlas = ExtResource("1_bdbpc")
+region = Rect2(68, 0, 17, 33)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xxwnv"]
+atlas = ExtResource("1_bdbpc")
+region = Rect2(85, 0, 17, 33)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_63cyc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ygha7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y4nnh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jp436")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_geon2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3asvo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xxwnv")
+}],
+"loop": true,
+"name": &"broadcasting",
+"speed": 9.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ibud7")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[node name="Radio" type="CanvasLayer"]
+script = ExtResource("1_ygha7")
+messages = null
+tower_scenes = null
+
+[node name="RadioButton" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 294.0
+offset_top = 132.0
+offset_right = 313.0
+offset_bottom = 176.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="RadioButton"]
+position = Vector2(10, 22)
+scale = Vector2(2, 1.951)
+sprite_frames = SubResource("SpriteFrames_63cyc")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="DialogueBox" parent="." instance=ExtResource("3_ibud7")]
+visible = false
+offset_left = 33.0
+offset_top = -1.0
+offset_right = 33.0
+offset_bottom = -1.0
+scale = Vector2(0.80000037, 1)
+
+[node name="TowerMenu" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 295.0
+offset_top = 132.0
+offset_right = 313.0
+offset_bottom = 175.0
+
+[node name="Items" type="HBoxContainer" parent="TowerMenu"]
+visible = false
+layout_mode = 0
+offset_left = -282.0
+offset_top = 7.0
+offset_right = -8.0
+offset_bottom = 47.0
