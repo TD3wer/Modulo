@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="TowerDefence"
-run/main_scene="uid://hnsh6k51bbav"
+config/name="TowerDefence (Copy)"
+run/main_scene="uid://djiy8kjave18n"
 config/features=PackedStringArray("4.5", "Mobile")
 config/icon="res://icon.svg"
 
@@ -24,10 +24,8 @@ Family="*res://Autoload/family_state.gd"
 
 window/size/viewport_width=320
 window/size/viewport_height=180
+window/size/mode=3
 window/size/minimize_disabled=true
-window/size/maximize_disabled=true
-window/size/window_width_override=1280
-window/size/window_height_override=720
 window/stretch/mode="viewport"
 window/stretch/scale_mode="integer"
 

@@ -1,5 +1,8 @@
 extends Node2D
 
+signal tower_placed(scene: PackedScene)
+signal tower_removed(scene: PackedScene, cooldown: float)
+
 @export var recruta_scene: PackedScene  # torre inicial/padrão, antes do jogador escolher outra no rádio
 @export var cursor_normal: Texture2D
 @export var cursor_grab: Texture2D
@@ -7,7 +10,7 @@ extends Node2D
 
 @onready var buildable_layer: TileMapLayer = $"../BuildableLayer"
 
-var is_dragging: bool = false
+var is_placing: bool = false
 var preview: Node2D = null
 var occupied_cells: Dictionary = {}  # Vector2i -> true, evita duas torres na mesma célula
 var active_tower_scene: PackedScene
@@ -22,29 +25,31 @@ func _ready() -> void:
 	Input.set_custom_mouse_cursor(_cursor_normal_scaled)
 
 
-## Chamado pelo Rádio quando o jogador escolhe um ícone de torre no menu.
+## Chamado pelo Rádio no exato momento em que o jogador PRESSIONA o ícone
+## (button_down, não "pressed" — que só dispara ao soltar). O arraste
+## começa junto com o clique, sem soltar o botão do mouse.
 func set_active_tower(scene: PackedScene) -> void:
 	active_tower_scene = scene
+	_start_placing()
 
 
-func _scaled_cursor(tex: Texture2D) -> Texture2D:
-	if tex == null or cursor_scale <= 1:
-		return tex
-	var img: Image = tex.get_image()
-	img.resize(img.get_width() * cursor_scale, img.get_height() * cursor_scale, Image.INTERPOLATE_NEAREST)
-	return ImageTexture.create_from_image(img)
+func _start_placing() -> void:
+	if active_tower_scene == null:
+		return
 
+	if is_placing and preview:
+		preview.queue_free()  # trocou de torre no meio do processo, descarta o fantasma antigo
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.pressed:
-			_start_drag()
-		else:
-			_end_drag()
+	is_placing = true
+	Input.set_custom_mouse_cursor(_cursor_grab_scaled)
+
+	preview = active_tower_scene.instantiate()
+	preview.is_preview = true
+	add_child(preview)
 
 
 func _process(_delta: float) -> void:
-	if not is_dragging or preview == null:
+	if not is_placing or preview == null:
 		return
 
 	var cell := _get_cell_under_mouse()
@@ -52,24 +57,15 @@ func _process(_delta: float) -> void:
 	# verde se pode soltar aqui, vermelho se não pode
 	preview.modulate = Color(0.4, 1.0, 0.4, 0.7) if _is_valid_cell(cell) else Color(1.0, 0.4, 0.4, 0.7)
 
-
-func _start_drag() -> void:
-	if active_tower_scene == null or is_dragging:
-		return
-
-	is_dragging = true
-	Input.set_custom_mouse_cursor(_cursor_grab_scaled)
-
-	preview = active_tower_scene.instantiate()
-	preview.is_preview = true  # fantasma: só mostra parado, sem atirar nem detectar nada
-	add_child(preview)
+	# Solta o botão em QUALQUER lugar confirma — checando o estado do
+	# mouse a cada frame em vez de esperar um evento de input específico,
+	# não importa se o clique "nasceu" no ícone (um Control) ou no mapa.
+	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		_confirm_placement()
 
 
-func _end_drag() -> void:
-	if not is_dragging:
-		return
-
-	is_dragging = false
+func _confirm_placement() -> void:
+	is_placing = false
 	Input.set_custom_mouse_cursor(_cursor_normal_scaled)
 
 	var cell := _get_cell_under_mouse()
@@ -100,3 +96,22 @@ func _place_recruta(cell: Vector2i) -> void:
 	get_parent().add_child(recruta)  # entra na árvore ANTES de setar global_position
 	recruta.global_position = _cell_to_global(cell)
 	occupied_cells[cell] = true
+
+	recruta.placed_cell = cell
+	recruta.tower_scene_ref = active_tower_scene
+	recruta.removed.connect(_on_recruta_removed)
+
+	tower_placed.emit(active_tower_scene)
+
+
+func _on_recruta_removed(cell: Vector2i, scene: PackedScene, cooldown: float) -> void:
+	occupied_cells.erase(cell)  # libera a célula pra poder construir ali de novo
+	tower_removed.emit(scene, cooldown)
+
+
+func _scaled_cursor(tex: Texture2D) -> Texture2D:
+	if tex == null or cursor_scale <= 1:
+		return tex
+	var img: Image = tex.get_image()
+	img.resize(img.get_width() * cursor_scale, img.get_height() * cursor_scale, Image.INTERPOLATE_NEAREST)
+	return ImageTexture.create_from_image(img)
