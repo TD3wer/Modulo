@@ -21,6 +21,12 @@ signal wave_finished
 
 
 func _ready() -> void:
+	pass  # o spawner só começa quando start() for chamado
+
+
+## Chama isso de fora (ex: quando a fala de intro do rádio terminar) pra
+## começar a soltar inimigos e contar o tempo da fase.
+func start() -> void:
 	Game.start_stage_timer()
 	_run_wave_script(wave_script)
 
@@ -37,7 +43,7 @@ func _run_wave_script(script: String) -> void:
 func _run_command(command: String) -> void:
 	if command.begins_with("w"):
 		var seconds: float = command.substr(1).to_float()
-		await get_tree().create_timer(seconds).timeout
+		await get_tree().create_timer(seconds, false).timeout
 		return
 
 	var parts: PackedStringArray = command.split("x")
@@ -53,7 +59,7 @@ func _run_command(command: String) -> void:
 	for i in range(count):
 		_spawn_enemy(enemy_index)
 		if i < count - 1:
-			await get_tree().create_timer(interval).timeout
+			await get_tree().create_timer(interval, false).timeout
 
 
 func _spawn_enemy(enemy_index: int) -> void:

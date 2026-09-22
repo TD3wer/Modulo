@@ -1,9 +1,10 @@
-[gd_scene load_steps=37 format=3 uid="uid://pbjxdnjwl5ba"]
+[gd_scene load_steps=42 format=3 uid="uid://pbjxdnjwl5ba"]
 
 [ext_resource type="Script" uid="uid://d4ld427jug3vw" path="res://Scripts/recruta.gd" id="1_vedim"]
 [ext_resource type="PackedScene" uid="uid://cmx6b6qgipeu8" path="res://Scenes/bullet.tscn" id="2_l8r6d"]
 [ext_resource type="Texture2D" uid="uid://brqmnsq3da4mo" path="res://Assets/frames/recruta_idle_1.png" id="2_stebd"]
 [ext_resource type="Texture2D" uid="uid://cxheewa2qfokw" path="res://Assets/frames/recruta_drop_0.png" id="2_wp5sy"]
+[ext_resource type="AudioStream" uid="uid://davhknd50kspv" path="res://SFX/8-bit-gunshot.wav" id="3_kxjxh"]
 [ext_resource type="Texture2D" uid="uid://btvp0s7o5licm" path="res://Assets/frames/recruta_drop_1.png" id="3_l8r6d"]
 [ext_resource type="Texture2D" uid="uid://bvstkfsphpvb4" path="res://Assets/frames/recruta_drop_2.png" id="4_as8w5"]
 [ext_resource type="Texture2D" uid="uid://gbdiupulp8c0" path="res://Assets/frames/recruta_drop_3.png" id="5_mye54"]
@@ -34,6 +35,9 @@
 [ext_resource type="Texture2D" uid="uid://bgy2jdfj3xfpp" path="res://Assets/frames/recruta_shot_1.png" id="31_h1kj5"]
 [ext_resource type="Texture2D" uid="uid://dciwyppqsevgw" path="res://Assets/frames/recruta_shot_2.png" id="32_7331f"]
 [ext_resource type="Texture2D" uid="uid://bmde7oex4om4w" path="res://Assets/frames/recruta_shot_3.png" id="33_grtxa"]
+[ext_resource type="Texture2D" uid="uid://b6jbvnl6y6l14" path="res://Assets/UI/Remove trop.png" id="35_jgqbl"]
+[ext_resource type="Texture2D" uid="uid://yorvsmynyfjd" path="res://Assets/UI/Remove trop Pressed.png" id="36_kxjxh"]
+[ext_resource type="Texture2D" uid="uid://cu223d67l1xqt" path="res://Assets/UI/Remove trop Hovered.png" id="37_x2p4e"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jbe1c"]
 radius = 30.0
@@ -152,10 +156,14 @@ animations = [{
 "speed": 12.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wxvmc"]
+size = Vector2(8, 8)
+
 [node name="Recruta" type="Node2D"]
 script = ExtResource("1_vedim")
 damage = 30
 bullet_scene = ExtResource("2_l8r6d")
+shoot_sound = ExtResource("3_kxjxh")
 
 [node name="Muzzle" type="Marker2D" parent="."]
 position = Vector2(4, -1)
@@ -171,3 +179,23 @@ shape = SubResource("CircleShape2D_jbe1c")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_1ruvv")
 animation = &"shoot"
+frame = 3
+frame_progress = 1.0
+
+[node name="ClickArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClickArea"]
+shape = SubResource("RectangleShape2D_wxvmc")
+
+[node name="RemoveButton" type="TextureButton" parent="."]
+visible = false
+offset_left = 4.0
+offset_top = -13.0
+offset_right = 13.0
+offset_bottom = -4.0
+texture_normal = ExtResource("35_jgqbl")
+texture_pressed = ExtResource("36_kxjxh")
+texture_hover = ExtResource("37_x2p4e")
+
+[node name="ShootAudio" type="AudioStreamPlayer2D" parent="."]
+volume_db = 0.5
