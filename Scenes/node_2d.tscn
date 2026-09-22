@@ -82,7 +82,7 @@ curve = SubResource("Curve2D_epypp")
 script = ExtResource("2_0e48y")
 enemy_scenes = Array[PackedScene]([ExtResource("3_epypp")])
 enemy_path = NodePath("../Path2D")
-wave_script = "w12 1x4s1 w8 1x6s1 w8 1x4s0.5 w5 w10 1x4s1 w2 1x2s0.5 w11 1x8s1 w12 1x12s0.5 w2 w5 1x1s1 "
+wave_script = "1x5s1 w8 1x2s1 w3 1x22s3"
 
 [node name="BuildableLayer" type="TileMapLayer" parent="."]
 self_modulate = Color(1, 1, 1, 0.2)
