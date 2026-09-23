@@ -1,0 +1,154 @@
+[gd_scene load_steps=13 format=3 uid="uid://u0tb37tlp175"]
+
+[ext_resource type="Script" uid="uid://ge1qxdmhyjdn" path="res://intro.gd" id="1_jw2oo"]
+[ext_resource type="PackedScene" uid="uid://hnsh6k51bbav" path="res://Scenes/1_cutscene.tscn" id="2_5dcil"]
+[ext_resource type="FontFile" uid="uid://c4hmq6jebrlou" path="res://Assets/pixel_operator/PixelOperator8-Bold.ttf" id="3_iffca"]
+[ext_resource type="Script" uid="uid://dnug0vvrepwq7" path="res://typewriter_label.gd" id="4_o6jpy"]
+[ext_resource type="AudioStream" uid="uid://cf71irur4xsp7" path="res://SFX/8-bit-combo.wav" id="5_yptci"]
+[ext_resource type="FontFile" uid="uid://c4ls55ik8e4rx" path="res://Assets/pixel_operator/PixelOperator8.ttf" id="6_qs2gn"]
+[ext_resource type="Texture2D" uid="uid://dv28igv4ocvnp" path="res://Assets/UI/Placeholderhover.png" id="7_bsmil"]
+[ext_resource type="Texture2D" uid="uid://5xl0xgn415sf" path="res://Assets/UI/Placeholder.png" id="8_nk5ao"]
+
+[sub_resource type="Theme" id="Theme_et2pu"]
+default_font = ExtResource("3_iffca")
+default_font_size = 8
+
+[sub_resource type="Theme" id="Theme_2r7bd"]
+default_font = ExtResource("6_qs2gn")
+default_font_size = 8
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_skevf"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_bsmil")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_nk5ao")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t7h8b"]
+size = Vector2(8, 8)
+
+[node name="Intro" type="CanvasLayer"]
+script = ExtResource("1_jw2oo")
+next_scene = ExtResource("2_5dcil")
+theme_quote = "[b]O quex	 você chama de [shake]escolha[/shake], quando a alternativa é [shake]morrer de um jeito ou de outro?[/shake][/b]"
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="QuotePhase" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="TypewriterLabel" type="RichTextLabel" parent="QuotePhase"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_et2pu")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_o6jpy")
+seconds_per_character = 0.28
+typing_sound = ExtResource("5_yptci")
+
+[node name="TypeAudio" type="AudioStreamPlayer" parent="QuotePhase/TypewriterLabel"]
+
+[node name="CharacterSelectPhase" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Quem é você" type="Label" parent="CharacterSelectPhase"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_2r7bd")
+text = "
+Quem é você?"
+horizontal_alignment = 1
+
+[node name="MaleOption" type="Node2D" parent="CharacterSelectPhase"]
+position = Vector2(61, 99)
+scale = Vector2(12, 12)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterSelectPhase/MaleOption"]
+position = Vector2(0, 0.08333397)
+sprite_frames = SubResource("SpriteFrames_skevf")
+animation = &"idle"
+
+[node name="ClickArea" type="Area2D" parent="CharacterSelectPhase/MaleOption"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterSelectPhase/MaleOption/ClickArea"]
+position = Vector2(0, 0.08333397)
+shape = SubResource("RectangleShape2D_t7h8b")
+
+[node name="FemaleOption" type="Node2D" parent="CharacterSelectPhase"]
+position = Vector2(259, 99)
+scale = Vector2(12, 12)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterSelectPhase/FemaleOption"]
+position = Vector2(0, 0.08333397)
+sprite_frames = SubResource("SpriteFrames_skevf")
+animation = &"idle"
+
+[node name="ClickArea" type="Area2D" parent="CharacterSelectPhase/FemaleOption"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterSelectPhase/FemaleOption/ClickArea"]
+shape = SubResource("RectangleShape2D_t7h8b")
+
+[node name="DatePhase" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="TypewriterLabel" type="RichTextLabel" parent="DatePhase"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_et2pu")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_o6jpy")
+typing_sound = ExtResource("5_yptci")
+
+[node name="TypeAudio" type="AudioStreamPlayer" parent="DatePhase/TypewriterLabel"]

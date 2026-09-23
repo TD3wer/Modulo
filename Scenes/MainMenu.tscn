@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=4 uid="uid://djiy8kjave18n"]
 
 [ext_resource type="Script" uid="uid://dwcb1ffy1qmw0" path="res://Scripts/main_menu.gd" id="1_df05h"]
-[ext_resource type="PackedScene" uid="uid://hnsh6k51bbav" path="res://Scenes/1_cutscene.tscn" id="2_8um5k"]
+[ext_resource type="PackedScene" uid="uid://u0tb37tlp175" path="res://Scenes/Intro.tscn" id="2_df05h"]
 [ext_resource type="FontFile" uid="uid://c4hmq6jebrlou" path="res://Assets/pixel_operator/PixelOperator8-Bold.ttf" id="3_xim88"]
 [ext_resource type="FontFile" uid="uid://c4ls55ik8e4rx" path="res://Assets/pixel_operator/PixelOperator8.ttf" id="4_koqhg"]
 [ext_resource type="Texture2D" uid="uid://co5i2vl8n04vv" path="res://Assets/Sprite-0001-Sheet.png" id="5_cmrfp"]
@@ -70,7 +70,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_df05h")
-next_scene = ExtResource("2_8um5k")
+next_scene = ExtResource("2_df05h")
 metadata/_edit_use_anchors_ = true
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
