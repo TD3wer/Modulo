@@ -2,7 +2,7 @@ extends RichTextLabel
 
 signal typing_finished
 
-@export var seconds_per_character: float = 0.06
+@export var seconds_per_character: float = 0.28
 @export var typing_sound: AudioStream
 @export var pitch_min: float = 0.9
 @export var pitch_max: float = 1.1

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://u0tb37tlp175"]
+[gd_scene load_steps=12 format=3 uid="uid://u0tb37tlp175"]
 
 [ext_resource type="Script" uid="uid://ge1qxdmhyjdn" path="res://intro.gd" id="1_jw2oo"]
 [ext_resource type="PackedScene" uid="uid://hnsh6k51bbav" path="res://Scenes/1_cutscene.tscn" id="2_5dcil"]
@@ -36,13 +36,11 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_t7h8b"]
-size = Vector2(8, 8)
-
 [node name="Intro" type="CanvasLayer"]
 script = ExtResource("1_jw2oo")
 next_scene = ExtResource("2_5dcil")
-theme_quote = "[b]O quex	 você chama de [shake]escolha[/shake], quando a alternativa é [shake]morrer de um jeito ou de outro?[/shake][/b]"
+theme_quote = "[b]O que você chama de [shake]escolha[/shake], quando a alternativa é [shake]morrer de um jeito ou de outro?[/shake][/b]"
+date_text = "09 Jan. 0292 A.R"
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchors_preset = 15
@@ -74,7 +72,6 @@ theme = SubResource("Theme_et2pu")
 horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("4_o6jpy")
-seconds_per_character = 0.28
 typing_sound = ExtResource("5_yptci")
 
 [node name="TypeAudio" type="AudioStreamPlayer" parent="QuotePhase/TypewriterLabel"]
@@ -86,6 +83,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="Quem é você" type="Label" parent="CharacterSelectPhase"]
@@ -100,34 +98,31 @@ text = "
 Quem é você?"
 horizontal_alignment = 1
 
-[node name="MaleOption" type="Node2D" parent="CharacterSelectPhase"]
-position = Vector2(61, 99)
+[node name="MaleOption" type="Control" parent="CharacterSelectPhase"]
+anchors_preset = 0
+offset_left = 13.0
+offset_top = 52.0
+offset_right = 21.0
+offset_bottom = 60.000004
 scale = Vector2(12, 12)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterSelectPhase/MaleOption"]
-position = Vector2(0, 0.08333397)
+position = Vector2(4, 4.0000005)
 sprite_frames = SubResource("SpriteFrames_skevf")
 animation = &"idle"
 
-[node name="ClickArea" type="Area2D" parent="CharacterSelectPhase/MaleOption"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterSelectPhase/MaleOption/ClickArea"]
-position = Vector2(0, 0.08333397)
-shape = SubResource("RectangleShape2D_t7h8b")
-
-[node name="FemaleOption" type="Node2D" parent="CharacterSelectPhase"]
-position = Vector2(259, 99)
+[node name="FemaleOption" type="Control" parent="CharacterSelectPhase"]
+anchors_preset = 0
+offset_left = 211.0
+offset_top = 52.000004
+offset_right = 219.0
+offset_bottom = 60.000004
 scale = Vector2(12, 12)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterSelectPhase/FemaleOption"]
-position = Vector2(0, 0.08333397)
+position = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_skevf")
 animation = &"idle"
-
-[node name="ClickArea" type="Area2D" parent="CharacterSelectPhase/FemaleOption"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterSelectPhase/FemaleOption/ClickArea"]
-shape = SubResource("RectangleShape2D_t7h8b")
 
 [node name="DatePhase" type="Control" parent="."]
 layout_mode = 3

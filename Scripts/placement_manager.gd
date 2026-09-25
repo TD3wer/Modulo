@@ -4,9 +4,6 @@ signal tower_placed(scene: PackedScene)
 signal tower_removed(scene: PackedScene, cooldown: float)
 
 @export var recruta_scene: PackedScene  # torre inicial/padrão, antes do jogador escolher outra no rádio
-@export var cursor_normal: Texture2D
-@export var cursor_grab: Texture2D
-@export var cursor_scale: int = 4  # multiplicador de tamanho (nearest-neighbor, sem borrar)
 
 @onready var buildable_layer: TileMapLayer = $"../BuildableLayer"
 
@@ -14,15 +11,10 @@ var is_placing: bool = false
 var preview: Node2D = null
 var occupied_cells: Dictionary = {}  # Vector2i -> true, evita duas torres na mesma célula
 var active_tower_scene: PackedScene
-var _cursor_normal_scaled: Texture2D
-var _cursor_grab_scaled: Texture2D
 
 
 func _ready() -> void:
 	active_tower_scene = recruta_scene
-	_cursor_normal_scaled = _scaled_cursor(cursor_normal)
-	_cursor_grab_scaled = _scaled_cursor(cursor_grab)
-	Input.set_custom_mouse_cursor(_cursor_normal_scaled)
 
 
 ## Chamado pelo Rádio no exato momento em que o jogador PRESSIONA o ícone
@@ -41,7 +33,6 @@ func _start_placing() -> void:
 		preview.queue_free()  # trocou de torre no meio do processo, descarta o fantasma antigo
 
 	is_placing = true
-	Input.set_custom_mouse_cursor(_cursor_grab_scaled)
 
 	preview = active_tower_scene.instantiate()
 	preview.is_preview = true
@@ -66,7 +57,6 @@ func _process(_delta: float) -> void:
 
 func _confirm_placement() -> void:
 	is_placing = false
-	Input.set_custom_mouse_cursor(_cursor_normal_scaled)
 
 	var cell := _get_cell_under_mouse()
 	if _is_valid_cell(cell):
@@ -107,11 +97,3 @@ func _place_recruta(cell: Vector2i) -> void:
 func _on_recruta_removed(cell: Vector2i, scene: PackedScene, cooldown: float) -> void:
 	occupied_cells.erase(cell)  # libera a célula pra poder construir ali de novo
 	tower_removed.emit(scene, cooldown)
-
-
-func _scaled_cursor(tex: Texture2D) -> Texture2D:
-	if tex == null or cursor_scale <= 1:
-		return tex
-	var img: Image = tex.get_image()
-	img.resize(img.get_width() * cursor_scale, img.get_height() * cursor_scale, Image.INTERPOLATE_NEAREST)
-	return ImageTexture.create_from_image(img)

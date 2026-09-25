@@ -6,13 +6,26 @@ signal time_changed(remaining: float)
 signal time_up
 signal screen_shake(duration: float, strength: float)
 
+@export var cursor_normal: Texture2D
+@export var cursor_grab: Texture2D  # usado enquanto o botão do mouse tá pressionado
+@export var cursor_scale: int = 4  # multiplicador de tamanho (nearest-neighbor, sem borrar)
+
 const MAX_LIFE: int = 5
 const STAGE_DURATION: float = 180.0  # 3 minutos
 
 var life: int = MAX_LIFE
 var time_remaining: float = STAGE_DURATION
+var chosen_gender: String = ""  # "masc" ou "fem" — setado na tela de seleção da intro
 
 var _timer_running: bool = false
+var _cursor_normal_scaled: Texture2D
+var _cursor_grab_scaled: Texture2D
+
+
+func _ready() -> void:
+	_cursor_normal_scaled = _scaled_cursor(cursor_normal)
+	_cursor_grab_scaled = _scaled_cursor(cursor_grab)
+	Input.set_custom_mouse_cursor(_cursor_normal_scaled)
 
 
 func _process(delta: float) -> void:
@@ -27,9 +40,20 @@ func _process(delta: float) -> void:
 		time_up.emit()
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F11:
 		_toggle_fullscreen()
+
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		Input.set_custom_mouse_cursor(_cursor_grab_scaled if event.pressed else _cursor_normal_scaled)
+
+
+func _scaled_cursor(tex: Texture2D) -> Texture2D:
+	if tex == null or cursor_scale <= 1:
+		return tex
+	var img: Image = tex.get_image()
+	img.resize(img.get_width() * cursor_scale, img.get_height() * cursor_scale, Image.INTERPOLATE_NEAREST)
+	return ImageTexture.create_from_image(img)
 
 
 func _toggle_fullscreen() -> void:

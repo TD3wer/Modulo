@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://bls2nwi65cm7k"]
+[gd_scene load_steps=16 format=4 uid="uid://bls2nwi65cm7k"]
 
 [ext_resource type="PackedScene" uid="uid://pbjxdnjwl5ba" path="res://Scenes/Recruta.tscn" id="1_0hol4"]
 [ext_resource type="Texture2D" uid="uid://co5i2vl8n04vv" path="res://Assets/Sprite-0001-Sheet.png" id="1_wtcfe"]
@@ -6,9 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://do6a2kr3jxb8m" path="res://Scenes/Enemy.tscn" id="3_epypp"]
 [ext_resource type="Texture2D" uid="uid://c8gkemsph5ocj" path="res://Assets/Tilesets/BuildableTile.png" id="5_d21ai"]
 [ext_resource type="Script" uid="uid://dxvx8d623ys2o" path="res://Scripts/placement_manager.gd" id="7_rj586"]
-[ext_resource type="Texture2D" uid="uid://tysc17um831f" path="res://Assets/cursor/Cursor-idle.png" id="8_4d7sh"]
 [ext_resource type="PackedScene" uid="uid://c3d4665tuguc0" path="res://Scenes/hud.tscn" id="8_v7gqg"]
-[ext_resource type="Texture2D" uid="uid://cu2gkpvok1k0b" path="res://Assets/cursor/Cursor-Click.png" id="9_ir8iy"]
 [ext_resource type="PackedScene" uid="uid://cvuajuutl6v47" path="res://Scenes/radio.tscn" id="10_hvaui"]
 [ext_resource type="Texture2D" uid="uid://ddrcc2h730pj6" path="res://Assets/portraits/recruit portrait.png" id="11_2ooml"]
 [ext_resource type="Script" uid="uid://3y3ealpffb0x" path="res://Scenes/screen_shake.gd" id="12_p20hg"]
@@ -98,8 +96,6 @@ tile_set = SubResource("TileSet_epypp")
 [node name="PlacementManager" type="Node2D" parent="."]
 script = ExtResource("7_rj586")
 recruta_scene = ExtResource("1_0hol4")
-cursor_normal = ExtResource("8_4d7sh")
-cursor_grab = ExtResource("9_ir8iy")
 
 [node name="HUD" parent="." instance=ExtResource("8_v7gqg")]
 

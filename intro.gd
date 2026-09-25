@@ -1,11 +1,11 @@
 extends CanvasLayer
 
-enum Phase { QUOTE, SELECT, DATE }
+enum Phase { SELECT, QUOTE, DATE }
 
 ## Pra onde vai depois que o jogador confirma a data (hoje: Cutscene 1).
 @export var next_scene: PackedScene
 
-@export_group("Fase 1: Frase tema")
+@export_group("Fase 2: Frase tema")
 @export_multiline var theme_quote: String = "[b]O que a você chama de [shake]escolha[/shake], quando a alternativa é [shake]morrer de um jeito ou de outro?[/shake][/b]"
 
 @export_group("Fase 3: Data/hora/local")
@@ -15,34 +15,38 @@ enum Phase { QUOTE, SELECT, DATE }
 @onready var quote_label: RichTextLabel = $QuotePhase/TypewriterLabel
 
 @onready var select_phase: Control = $CharacterSelectPhase
+@onready var male_option: Control = $CharacterSelectPhase/MaleOption
 @onready var male_anim: AnimatedSprite2D = $CharacterSelectPhase/MaleOption/AnimatedSprite2D
-@onready var male_click_area: Area2D = $CharacterSelectPhase/MaleOption/ClickArea
+@onready var female_option: Control = $CharacterSelectPhase/FemaleOption
 @onready var female_anim: AnimatedSprite2D = $CharacterSelectPhase/FemaleOption/AnimatedSprite2D
-@onready var female_click_area: Area2D = $CharacterSelectPhase/FemaleOption/ClickArea
 
 @onready var date_phase: Control = $DatePhase
 @onready var date_label: RichTextLabel = $DatePhase/TypewriterLabel
 
-var phase: Phase = Phase.QUOTE
+var phase: Phase = Phase.SELECT
 
 
 func _ready() -> void:
-	quote_phase.visible = true
-	select_phase.visible = false
+	# Sem isso, esses Control (tela inteira) absorvem o clique antes dele
+	# chegar nas Area2D dos personagens, que ficam "por baixo" deles.
+	select_phase.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	quote_phase.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	date_phase.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	select_phase.visible = true
+	quote_phase.visible = false
 	date_phase.visible = false
 
-	male_click_area.mouse_entered.connect(func(): male_anim.play("hover"))
-	male_click_area.mouse_exited.connect(func(): male_anim.play("idle"))
-	male_click_area.input_event.connect(_on_male_input_event)
+	male_option.mouse_entered.connect(func(): male_anim.play("hover"))
+	male_option.mouse_exited.connect(func(): male_anim.play("idle"))
+	male_option.gui_input.connect(_on_male_gui_input)
 
-	female_click_area.mouse_entered.connect(func(): female_anim.play("hover"))
-	female_click_area.mouse_exited.connect(func(): female_anim.play("idle"))
-	female_click_area.input_event.connect(_on_female_input_event)
+	female_option.mouse_entered.connect(func(): female_anim.play("hover"))
+	female_option.mouse_exited.connect(func(): female_anim.play("idle"))
+	female_option.gui_input.connect(_on_female_gui_input)
 
 	male_anim.play("idle")
 	female_anim.play("idle")
-
-	quote_label.type_text(theme_quote)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -54,7 +58,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			if quote_label.is_typing():
 				quote_label.skip_to_end()
 			else:
-				_start_select_phase()
+				_start_date_phase()
 		Phase.DATE:
 			if date_label.is_typing():
 				date_label.skip_to_end()
@@ -62,18 +66,12 @@ func _unhandled_input(event: InputEvent) -> void:
 				_go_to_next_scene()
 
 
-func _start_select_phase() -> void:
-	phase = Phase.SELECT
-	quote_phase.visible = false
-	select_phase.visible = true
-
-
-func _on_male_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+func _on_male_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_select_character("masc")
 
 
-func _on_female_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+func _on_female_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_select_character("fem")
 
@@ -82,12 +80,19 @@ func _select_character(gender: String) -> void:
 	if phase != Phase.SELECT:
 		return
 	Game.chosen_gender = gender
-	_start_date_phase()
+	_start_quote_phase()
+
+
+func _start_quote_phase() -> void:
+	phase = Phase.QUOTE
+	select_phase.visible = false
+	quote_phase.visible = true
+	quote_label.type_text(theme_quote)
 
 
 func _start_date_phase() -> void:
 	phase = Phase.DATE
-	select_phase.visible = false
+	quote_phase.visible = false
 	date_phase.visible = true
 	date_label.type_text(date_text)
 
