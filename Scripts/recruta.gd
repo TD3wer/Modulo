@@ -10,6 +10,8 @@ extends Node2D
 @export var ability_duration: float = 8.0
 @export var ability_fire_rate_multiplier: float = 2.0
 @export var ability_animation_fps_boost: float = 4.0  # quanto mais rápido a animação de tiro fica
+@export var ability_charging_color: Color = Color(0.1, 0.1, 0.1, 0.75)  # barra cinza (carregando)
+@export var ability_active_color: Color = Color(1.0, 0.4, 0.4, 0.75)  # barra vermelha (ativa, contando)
 
 @export_group("Remoção")
 @export var remove_cooldown: float = 15.0  # segundos até o ícone dessa torre liberar de novo no rádio
@@ -35,6 +37,7 @@ var tower_scene_ref: PackedScene  # idem — pra saber qual ícone reativar quan
 
 var _hovering_tower: bool = false
 var _hovering_remove_button: bool = false
+var _hovering_ability_button: bool = false
 var _show_range: bool = false
 var _hover_hide_request_id: int = 0  # invalida pedidos de "esconder" antigos quando o mouse volta
 
@@ -45,6 +48,8 @@ var _hover_hide_request_id: int = 0  # invalida pedidos de "esconder" antigos qu
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var click_area: Area2D = $ClickArea
 @onready var remove_button: TextureButton = $RemoveButton
+@onready var ability_button: TextureButton = $AbilityButton
+@onready var ability_overlay: ColorRect = $AbilityButton/CooldownOverlay
 @onready var shoot_audio: AudioStreamPlayer2D = $ShootAudio
 
 
@@ -59,7 +64,6 @@ func _ready() -> void:
 
 	range_area.area_entered.connect(_on_area_entered)
 	range_area.area_exited.connect(_on_area_exited)
-	click_area.input_event.connect(_on_click_area_input_event)
 	click_area.mouse_entered.connect(_on_tower_mouse_entered)
 	click_area.mouse_exited.connect(_on_tower_mouse_exited)
 
@@ -67,6 +71,14 @@ func _ready() -> void:
 	remove_button.pressed.connect(_on_remove_button_pressed)
 	remove_button.mouse_entered.connect(_on_remove_button_mouse_entered)
 	remove_button.mouse_exited.connect(_on_remove_button_mouse_exited)
+
+	ability_button.visible = false
+	ability_button.disabled = true  # começa carregando, ninguém clica ainda
+	ability_button.pressed.connect(_try_activate_ability)
+	ability_button.mouse_entered.connect(_on_ability_button_mouse_entered)
+	ability_button.mouse_exited.connect(_on_ability_button_mouse_exited)
+	ability_overlay.color = ability_charging_color
+	ability_overlay.anchor_top = 0.0  # cobre 100% — carga começa em zero
 
 	fire_timer.wait_time = 1.0 / max(fire_rate, 0.01)
 	fire_timer.timeout.connect(_on_fire_timer_timeout)
@@ -161,15 +173,12 @@ func _update_ability_charge(delta: float) -> void:
 		return  # já em uso ou já pronta esperando clique, não carrega mais
 
 	ability_charge += delta
+	ability_overlay.anchor_top = clampf(ability_charge / ability_charge_time, 0.0, 1.0)
+
 	if ability_charge >= ability_charge_time:
 		ability_charge = ability_charge_time
 		ability_ready = true
-		anim.modulate = Color(0.4, 1.0, 1.0)  # tint ciano: "pronta, clica em mim"
-
-
-func _on_click_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		_try_activate_ability()
+		ability_button.disabled = false  # agora sim, clicável
 
 
 func _on_tower_mouse_entered() -> void:
@@ -192,18 +201,29 @@ func _on_remove_button_mouse_exited() -> void:
 	_update_hover_visuals()
 
 
+func _on_ability_button_mouse_entered() -> void:
+	_hovering_ability_button = true
+	_update_hover_visuals()
+
+
+func _on_ability_button_mouse_exited() -> void:
+	_hovering_ability_button = false
+	_update_hover_visuals()
+
+
 ## Ganhar hover mostra na hora. Perder hover NÃO esconde na hora — espera
-## 1s (coyote time) pra dar tempo do mouse atravessar o vão entre a torre
-## e o botão. Se o mouse voltar (pra torre OU pro botão) antes desse
-## segundo passar, o esconder é cancelado.
+## 0.1s (coyote time) pra dar tempo do mouse atravessar o vão entre a torre
+## e os botões. Se o mouse voltar (pra torre OU pra qualquer botão) antes
+## desse tempo passar, o esconder é cancelado.
 func _update_hover_visuals() -> void:
-	var hovering: bool = _hovering_tower or _hovering_remove_button
+	var hovering: bool = _hovering_tower or _hovering_remove_button or _hovering_ability_button
 	_hover_hide_request_id += 1  # qualquer mudança de estado invalida um esconder pendente antigo
 
 	if hovering:
 		_show_range = true
 		queue_redraw()
 		remove_button.visible = true
+		ability_button.visible = true
 	else:
 		_request_hide_after_delay(_hover_hide_request_id)
 
@@ -219,6 +239,7 @@ func _request_hide_after_delay(request_id: int) -> void:
 	_show_range = false
 	queue_redraw()
 	remove_button.visible = false
+	ability_button.visible = false
 
 
 func _draw() -> void:
@@ -244,7 +265,10 @@ func _try_activate_ability() -> void:
 	ability_ready = false
 	ability_active = true
 	ability_charge = 0.0
-	anim.modulate = Color(1.0, 0.4, 0.4, 0.7)  # mesmo vermelho do preview de célula inválida no drag
+
+	ability_button.disabled = true
+	ability_overlay.color = ability_active_color
+	ability_overlay.anchor_top = 0.0  # barra vermelha cheia, vai recuando ao longo da duração
 
 	var boosted_wait_time: float = (1.0 / max(fire_rate, 0.01)) / ability_fire_rate_multiplier
 	fire_timer.wait_time = boosted_wait_time
@@ -253,13 +277,18 @@ func _try_activate_ability() -> void:
 	_on_fire_timer_timeout()  # atira agora, não espera o próximo tick do timer
 	_set_shoot_animation_boost(true)
 
-	await get_tree().create_timer(ability_duration, false).timeout  # false = pausa junto com o resto do jogo
+	var tween := create_tween()
+	tween.tween_property(ability_overlay, "anchor_top", 1.0, ability_duration)
+	await tween.finished
 
 	ability_active = false
 	fire_timer.wait_time = 1.0 / max(fire_rate, 0.01)
 	fire_timer.start()
-	anim.modulate = Color.WHITE
 	_set_shoot_animation_boost(false)
+
+	# volta a carregar do zero, barra cinza cheia de novo
+	ability_overlay.color = ability_charging_color
+	ability_overlay.anchor_top = 0.0
 
 
 ## speed_scale é por INSTÂNCIA do AnimatedSprite2D — diferente de mexer
