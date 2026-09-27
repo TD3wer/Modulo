@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwigwv7tn1sf"
-path="res://.godot/imported/inimigo_4.png-3fd2756230db02d7da08f52b00c39656.ctex"
+uid="uid://bg07v7xgvrit4"
+path="res://.godot/imported/Recruit-Idle-Sheet.png-0c0aa06a0b936ce4c0e1b5d0d40bc734.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/frames/inimigo_4.png"
-dest_files=["res://.godot/imported/inimigo_4.png-3fd2756230db02d7da08f52b00c39656.ctex"]
+source_file="res://Assets/Towers&Enemies/Recruit-Idle-Sheet.png"
+dest_files=["res://.godot/imported/Recruit-Idle-Sheet.png-0c0aa06a0b936ce4c0e1b5d0d40bc734.ctex"]
 
 [params]
 

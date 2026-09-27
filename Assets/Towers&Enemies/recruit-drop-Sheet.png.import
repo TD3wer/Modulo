@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dkrbod52buijc"
-path="res://.godot/imported/recruta_idle_16.png-c74a438f9993fa8aecb071e06c163414.ctex"
+uid="uid://d0ip7lja5777k"
+path="res://.godot/imported/recruit-drop-Sheet.png-c7901b01c0cf17c3e8cad8dbffe00c28.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/frames/recruta_idle_16.png"
-dest_files=["res://.godot/imported/recruta_idle_16.png-c74a438f9993fa8aecb071e06c163414.ctex"]
+source_file="res://Assets/Towers&Enemies/recruit-drop-Sheet.png"
+dest_files=["res://.godot/imported/recruit-drop-Sheet.png-c7901b01c0cf17c3e8cad8dbffe00c28.ctex"]
 
 [params]
 

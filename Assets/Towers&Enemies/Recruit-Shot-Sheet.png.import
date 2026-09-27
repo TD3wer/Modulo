@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmde7oex4om4w"
-path="res://.godot/imported/recruta_shot_3.png-160b928d4de60aca2d167ade57645d2e.ctex"
+uid="uid://b57ybp80w1mh4"
+path="res://.godot/imported/Recruit-Shot-Sheet.png-96db6e5f08bd8d72da9614e0536229d7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/frames/recruta_shot_3.png"
-dest_files=["res://.godot/imported/recruta_shot_3.png-160b928d4de60aca2d167ade57645d2e.ctex"]
+source_file="res://Assets/Towers&Enemies/Recruit-Shot-Sheet.png"
+dest_files=["res://.godot/imported/Recruit-Shot-Sheet.png-96db6e5f08bd8d72da9614e0536229d7.ctex"]
 
 [params]
 

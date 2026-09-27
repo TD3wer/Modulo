@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dw80tuigm52uo"
-path="res://.godot/imported/recruta_idle_3.png-10880dce52252c15c118ed47304ce98a.ctex"
+uid="uid://do4h4q6487mlx"
+path="res://.godot/imported/EnemyWalk-Sheet.png-1b9589a22ec7f1e69728ed08e5c7d6a9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/frames/recruta_idle_3.png"
-dest_files=["res://.godot/imported/recruta_idle_3.png-10880dce52252c15c118ed47304ce98a.ctex"]
+source_file="res://Assets/Towers&Enemies/EnemyWalk-Sheet.png"
+dest_files=["res://.godot/imported/EnemyWalk-Sheet.png-1b9589a22ec7f1e69728ed08e5c7d6a9.ctex"]
 
 [params]
 
