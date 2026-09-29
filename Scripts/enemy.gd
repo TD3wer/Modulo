@@ -58,3 +58,4 @@ func _reach_end() -> void:
 	if is_instance_valid(path_follow):
 		path_follow.queue_free()
 	Game.take_life(1)
+	Game.shake_screen()

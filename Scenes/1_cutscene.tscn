@@ -82,6 +82,12 @@ tile_map_data = PackedByteArray("AAAFAAYAAAAEAAEAAAAFAAcAAAAEAAEAAAAFAAgAAAAEAAE
 tile_set = SubResource("TileSet_8jmdt")
 
 [node name="DialogueBox" parent="." instance=ExtResource("1_bdho6")]
+anchor_top = 0.20555556
+anchor_bottom = 0.20555556
+offset_left = 2.0
+offset_top = 140.0
+offset_right = 318.0
+offset_bottom = 179.0
 dialogue_lines = Array[String](["E essas foram as noticias sobre o clima de hoje ...", "Noticias de ultima hora agora, na rua policias [b]emboscam[/b] traficantes de [b]Chronos[/b] ", "Esses [b][shaker amp=1 speed=20]VERMES[/shaker][/b], deveriam ser erradicados da sociedade! olhe com atenção!"])
 
 [node name="Background" type="TileMapLayer" parent="."]

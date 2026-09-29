@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://cvuajuutl6v47"]
+[gd_scene load_steps=13 format=3 uid="uid://cvuajuutl6v47"]
 
 [ext_resource type="Texture2D" uid="uid://dtpih0gv7o36n" path="res://Assets/Radio/Broadcasting.png" id="1_bdbpc"]
 [ext_resource type="Script" uid="uid://b12b52cl6wuvm" path="res://Scripts/radio.gd" id="1_ygha7"]
 [ext_resource type="Texture2D" uid="uid://cfiqnjh0lt6dc" path="res://Assets/Radio/Idle.png" id="2_ibud7"]
+[ext_resource type="AudioStream" uid="uid://nsr3ufjt2i8l" path="res://SFX/phone-fx_85bpm_D_minor.wav" id="2_y4nnh"]
 [ext_resource type="PackedScene" uid="uid://kticli83u6xj" path="res://Scenes/dialogue_box.tscn" id="3_ibud7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ygha7"]
@@ -65,44 +66,45 @@ animations = [{
 
 [node name="Radio" type="CanvasLayer"]
 script = ExtResource("1_ygha7")
-messages = null
-tower_scenes = null
+broadcasting_sound = ExtResource("2_y4nnh")
 
 [node name="RadioButton" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 294.0
-offset_top = 132.0
-offset_right = 313.0
-offset_bottom = 176.0
+offset_left = 289.0
+offset_top = 121.0
+offset_right = 318.0
+offset_bottom = 180.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="RadioButton"]
-position = Vector2(10, 22)
-scale = Vector2(2, 1.951)
+position = Vector2(13, 26)
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_63cyc")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="DialogueBox" parent="." instance=ExtResource("3_ibud7")]
-visible = false
-offset_left = 33.0
-offset_top = -1.0
-offset_right = 33.0
-offset_bottom = -1.0
-scale = Vector2(0.80000037, 1)
-
 [node name="TowerMenu" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 295.0
-offset_top = 132.0
-offset_right = 313.0
-offset_bottom = 175.0
+offset_left = 17.0
+offset_top = 137.0
+offset_right = 286.0
+offset_bottom = 178.0
 
 [node name="Items" type="HBoxContainer" parent="TowerMenu"]
 visible = false
-layout_mode = 0
-offset_left = -282.0
-offset_top = 7.0
-offset_right = -8.0
-offset_bottom = 47.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DialogueBox" parent="." instance=ExtResource("3_ibud7")]
+visible = false
+offset_left = 2.0
+offset_top = -12.0
+offset_right = -30.080017
+
+[node name="BroadcastAudio" type="AudioStreamPlayer" parent="."]
+volume_db = 0.5

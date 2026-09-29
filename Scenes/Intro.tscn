@@ -1,0 +1,172 @@
+[gd_scene load_steps=15 format=3 uid="uid://u0tb37tlp175"]
+
+[ext_resource type="Script" uid="uid://ge1qxdmhyjdn" path="res://intro.gd" id="1_jw2oo"]
+[ext_resource type="PackedScene" uid="uid://hnsh6k51bbav" path="res://Scenes/1_cutscene.tscn" id="2_5dcil"]
+[ext_resource type="FontFile" uid="uid://c4hmq6jebrlou" path="res://Assets/pixel_operator/PixelOperator8-Bold.ttf" id="3_iffca"]
+[ext_resource type="Script" uid="uid://dnug0vvrepwq7" path="res://typewriter_label.gd" id="4_o6jpy"]
+[ext_resource type="AudioStream" uid="uid://bs6ibqdybpt1d" path="res://SFX/freesound_community-typewriter-machine-64191.mp3" id="5_iffca"]
+[ext_resource type="FontFile" uid="uid://c4ls55ik8e4rx" path="res://Assets/pixel_operator/PixelOperator8.ttf" id="6_qs2gn"]
+[ext_resource type="Texture2D" uid="uid://du0ctsyc6mc17" path="res://Assets/portraits/MaleOptionHover.png" id="7_iffca"]
+[ext_resource type="Texture2D" uid="uid://6fy4qiwv8yxr" path="res://Assets/portraits/MaleOption.png" id="8_o6jpy"]
+[ext_resource type="Texture2D" uid="uid://db1w1kxs1vdpn" path="res://Assets/portraits/FemaleOptionHover.png" id="9_yptci"]
+[ext_resource type="Texture2D" uid="uid://bdviqwlhuryl8" path="res://Assets/portraits/FemaleOption.png" id="10_qs2gn"]
+
+[sub_resource type="Theme" id="Theme_et2pu"]
+default_font = ExtResource("3_iffca")
+default_font_size = 8
+
+[sub_resource type="Theme" id="Theme_2r7bd"]
+default_font = ExtResource("6_qs2gn")
+default_font_size = 8
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_skevf"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_iffca")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_o6jpy")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bsmil"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_yptci")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_qs2gn")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[node name="Intro" type="CanvasLayer"]
+script = ExtResource("1_jw2oo")
+next_scene = ExtResource("2_5dcil")
+theme_quote = "[b]O que você chama de [shake]escolha[/shake], quando a alternativa é [shake]morrer de um jeito ou de outro?[/shake][/b]"
+date_text = "09 Jan. 0292 A.R"
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="QuotePhase" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="TypewriterLabel" type="RichTextLabel" parent="QuotePhase"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_et2pu")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_o6jpy")
+typing_sound = ExtResource("5_iffca")
+
+[node name="TypeAudio" type="AudioStreamPlayer" parent="QuotePhase/TypewriterLabel"]
+volume_db = 7.0
+
+[node name="CharacterSelectPhase" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Quem é você" type="Label" parent="CharacterSelectPhase"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_2r7bd")
+text = "
+Quem é você?"
+horizontal_alignment = 1
+
+[node name="MaleOption" type="Control" parent="CharacterSelectPhase"]
+anchors_preset = 0
+offset_left = 17.0
+offset_top = 34.0
+offset_right = 81.0
+offset_bottom = 98.0
+scale = Vector2(2, 2)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterSelectPhase/MaleOption"]
+position = Vector2(32, 32)
+sprite_frames = SubResource("SpriteFrames_skevf")
+animation = &"idle"
+
+[node name="FemaleOption" type="Control" parent="CharacterSelectPhase"]
+anchors_preset = 0
+offset_left = 178.0
+offset_top = 40.0
+offset_right = 242.0
+offset_bottom = 104.0
+scale = Vector2(2, 2)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterSelectPhase/FemaleOption"]
+position = Vector2(32, 32.000004)
+sprite_frames = SubResource("SpriteFrames_bsmil")
+animation = &"hover"
+
+[node name="DatePhase" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="TypewriterLabel" type="RichTextLabel" parent="DatePhase"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_et2pu")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_o6jpy")
+typing_sound = ExtResource("5_iffca")
+
+[node name="TypeAudio" type="AudioStreamPlayer" parent="DatePhase/TypewriterLabel"]
+volume_db = 24.0
