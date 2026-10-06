@@ -2,8 +2,10 @@ extends Node2D
 
 ## Velocidade de deslocamento ao longo do Path2D (em "progress" units/seg,
 ## que no Godot 4 equivale aproximadamente a pixels por segundo na curva)
-@export var speed: float = 30.0
+@export var speed: float = 80.0
 @export var max_health: int = 30
+## Quanta moral o jogador ganha quando esse inimigo é DERROTADO (não ao chegar no fim).
+@export var morale_reward: int = 2
 
 var health: int
 var path_follow: PathFollow2D
@@ -43,6 +45,7 @@ func take_damage(amount: int) -> void:
 func _die() -> void:
 	is_dead = true
 	remove_from_group("enemies")
+	Game.add_morale(morale_reward)
 
 	if anim.sprite_frames and anim.sprite_frames.has_animation("die"):
 		anim.play("die")

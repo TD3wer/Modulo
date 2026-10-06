@@ -121,8 +121,8 @@ Alex: Você quer ser você a explicar pro seu pai [b]por que ele não acorda ama
 
 @145
 Alex: [shake]Sai da frente![/shake]"
-tower_scenes = Array[PackedScene]([ExtResource("1_0hol4")])
-tower_portraits = Array[Texture2D]([ExtResource("11_2ooml")])
+tower_scenes = Array[PackedScene]([ExtResource("1_0hol4"), ExtResource("1_0hol4")])
+tower_portraits = Array[Texture2D]([ExtResource("11_2ooml"), ExtResource("11_2ooml")])
 placement_manager = NodePath("../PlacementManager")
 wave_spawner = NodePath("../WaveSpawner")
 

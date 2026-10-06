@@ -16,12 +16,15 @@ extends Node2D
 @export_group("Remoção")
 @export var remove_cooldown: float = 15.0  # segundos até o ícone dessa torre liberar de novo no rádio
 
+@export_group("Economia")
+@export var morale_cost: int = 8  # quanto de moral custa colocar essa torre (ignorado se for a grátis da fase)
+
 @export_group("Som")
 @export var shoot_sound: AudioStream
 @export var shoot_pitch_min: float = 0.9
 @export var shoot_pitch_max: float = 1.1
 
-signal removed(placed_cell: Vector2i, tower_scene: PackedScene, cooldown: float)
+signal removed(placed_cell: Vector2i, tower_scene: PackedScene, slot_index: int, cooldown: float)
 
 enum State { DROPPING, IDLE, SHOOTING }
 
@@ -34,6 +37,7 @@ var ability_active: bool = false
 
 var placed_cell: Vector2i  # setado de fora (pelo PlacementManager) na hora que é colocada
 var tower_scene_ref: PackedScene  # idem — pra saber qual ícone reativar quando remover
+var slot_index: int = -1  # qual posição no array Tower Scenes do rádio (não a cena em si)
 
 var _hovering_tower: bool = false
 var _hovering_remove_button: bool = false
@@ -254,7 +258,7 @@ func _draw() -> void:
 
 
 func _on_remove_button_pressed() -> void:
-	removed.emit(placed_cell, tower_scene_ref, remove_cooldown)
+	removed.emit(placed_cell, tower_scene_ref, slot_index, remove_cooldown)
 	queue_free()
 
 

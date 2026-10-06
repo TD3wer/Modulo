@@ -47,9 +47,13 @@ var scheduled_messages: Array[RadioMessageData] = []
 var _fired_messages: Dictionary = {}
 var _intro_done: bool = false
 var _pending_scheduled_message: RadioMessageData = null  # esperando o jogador clicar pra abrir
-var _tower_icons: Dictionary = {}  # PackedScene -> Button
-var _tower_overlays: Dictionary = {}  # PackedScene -> ColorRect (camada cinza do cooldown)
-var _used_towers: Dictionary = {}  # PackedScene -> true, depois de colocada
+# Tudo abaixo é indexado por SLOT (posição no array Tower Scenes), não pela
+# cena em si — com a mesma cena duas vezes no array, usar a cena como chave
+# fazia os dois ícones colidirem na mesma entrada do dicionário.
+var _tower_icons: Dictionary = {}  # int (slot) -> Button
+var _tower_overlays: Dictionary = {}  # int (slot) -> ColorRect (camada cinza do cooldown)
+var _tower_costs: Dictionary = {}  # int (slot) -> int (custo de moral)
+var _used_towers: Dictionary = {}  # int (slot) -> true, depois de colocada
 
 
 class RadioMessageData:
@@ -82,6 +86,9 @@ func _ready() -> void:
 	if placement_manager:
 		placement_manager.tower_placed.connect(_on_any_tower_placed)
 		placement_manager.tower_removed.connect(_on_tower_removed)
+
+	Game.morale_changed.connect(_on_morale_changed)
+	_refresh_affordability()
 
 	_start_ringing()  # animação + som avisando que tem mensagem esperando
 
@@ -317,9 +324,15 @@ func _build_tower_menu() -> void:
 	const ICON_SIZE: float = 32.0
 	const PADDING: float = 4.0
 
-	print("Radio: construindo menu com %d torre(s) em Tower Scenes" % tower_scenes.size())
 	for i in range(tower_scenes.size()):
 		var scene: PackedScene = tower_scenes[i]
+
+		# Instancia rapidinho só pra ler o custo (mesma fonte de verdade
+		# que o PlacementManager usa), e descarta — acontece uma vez só,
+		# aqui no _ready, nunca em tempo de jogo.
+		var temp := scene.instantiate()
+		_tower_costs[i] = temp.morale_cost if "morale_cost" in temp else 0
+		temp.queue_free()
 
 		var icon := Button.new()
 		icon.text = ""
@@ -327,7 +340,7 @@ func _build_tower_menu() -> void:
 		icon.custom_minimum_size = Vector2(ICON_SIZE, ICON_SIZE)
 		icon.size = Vector2(ICON_SIZE, ICON_SIZE)  # forçado direto, não depende do container recalcular
 		icon.position = Vector2(PADDING + i * (ICON_SIZE + PADDING), PADDING)
-		icon.button_down.connect(_on_tower_icon_pressed.bind(scene))
+		icon.button_down.connect(_on_tower_icon_pressed.bind(i))
 		tower_menu.add_child(icon)  # direto no TowerMenu, sem passar pelo Items/HBoxContainer
 
 		if i < tower_portraits.size() and tower_portraits[i] != null:
@@ -350,39 +363,57 @@ func _build_tower_menu() -> void:
 		overlay.visible = false
 		icon.add_child(overlay)
 
-		_tower_icons[scene] = icon
-		_tower_overlays[scene] = overlay
+		_tower_icons[i] = icon
+		_tower_overlays[i] = overlay
 
 
-func _on_any_tower_placed(scene: PackedScene) -> void:
-	_used_towers[scene] = true
-	_cover_icon(scene)
+func _on_any_tower_placed(_scene: PackedScene, slot_index: int) -> void:
+	_used_towers[slot_index] = true
+	_cover_icon(slot_index)
 
 
-func _on_tower_removed(scene: PackedScene, cooldown: float) -> void:
-	_used_towers.erase(scene)
-	_start_icon_cooldown(scene, cooldown)
+func _on_tower_removed(_scene: PackedScene, slot_index: int, cooldown: float) -> void:
+	_used_towers.erase(slot_index)
+	_start_icon_cooldown(slot_index, cooldown)
+
+
+func _on_morale_changed(_new_morale: int) -> void:
+	_refresh_affordability()
+
+
+## Atualiza quais ícones dá pra clicar com base na moral atual — não mexe
+## nos que já estão cobertos (colocados/em cooldown), só nos disponíveis.
+func _refresh_affordability() -> void:
+	for i in _tower_icons.keys():
+		if _used_towers.has(i):
+			continue
+		var icon: BaseButton = _tower_icons[i]
+		var cost: int = _tower_costs.get(i, 0)
+		var affordable: bool = Game.can_afford(cost)
+		icon.disabled = not affordable
+		icon.modulate = Color.WHITE if affordable else Color(0.55, 0.55, 0.55, 1.0)
 
 
 ## Cobre o ícone inteiro, sem animação — usado assim que a torre é
 ## colocada (fica bloqueado até ser removida, aí sim entra em cooldown).
-func _cover_icon(scene: PackedScene) -> void:
-	if not _tower_icons.has(scene):
+func _cover_icon(slot_index: int) -> void:
+	if not _tower_icons.has(slot_index):
 		return
-	var icon: BaseButton = _tower_icons[scene]
-	var overlay: ColorRect = _tower_overlays.get(scene)
+	var icon: BaseButton = _tower_icons[slot_index]
+	var overlay: ColorRect = _tower_overlays.get(slot_index)
 
 	icon.disabled = true
+	icon.modulate = Color.WHITE
 	if overlay:
 		overlay.anchor_top = 0.0
 		overlay.visible = true
 
 
-func _start_icon_cooldown(scene: PackedScene, cooldown: float) -> void:
-	if not _tower_icons.has(scene):
+func _start_icon_cooldown(slot_index: int, cooldown: float) -> void:
+	if not _tower_icons.has(slot_index):
 		return
-	var icon: BaseButton = _tower_icons[scene]
-	var overlay: ColorRect = _tower_overlays.get(scene)
+	var icon: BaseButton = _tower_icons[slot_index]
+	var overlay: ColorRect = _tower_overlays.get(slot_index)
 
 	icon.disabled = true
 
@@ -394,10 +425,10 @@ func _start_icon_cooldown(scene: PackedScene, cooldown: float) -> void:
 		await tween.finished
 		overlay.visible = false
 
-	icon.disabled = false
+	_refresh_affordability()  # volta a checar se dá pra pagar agora, em vez de habilitar sempre
 
 
-func _on_tower_icon_pressed(scene: PackedScene) -> void:
+func _on_tower_icon_pressed(slot_index: int) -> void:
 	if placement_manager and placement_manager.has_method("set_active_tower"):
-		placement_manager.set_active_tower(scene)
+		placement_manager.set_active_tower(tower_scenes[slot_index], slot_index)
 	_close_tower_menu()

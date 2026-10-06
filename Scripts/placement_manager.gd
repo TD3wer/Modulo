@@ -1,7 +1,7 @@
 extends Node2D
 
-signal tower_placed(scene: PackedScene)
-signal tower_removed(scene: PackedScene, cooldown: float)
+signal tower_placed(scene: PackedScene, slot_index: int)
+signal tower_removed(scene: PackedScene, slot_index: int, cooldown: float)
 
 @export var recruta_scene: PackedScene  # torre inicial/padrão, antes do jogador escolher outra no rádio
 
@@ -11,6 +11,8 @@ var is_placing: bool = false
 var preview: Node2D = null
 var occupied_cells: Dictionary = {}  # Vector2i -> true, evita duas torres na mesma célula
 var active_tower_scene: PackedScene
+var active_slot_index: int = -1
+var active_tower_cost: int = 0
 
 
 func _ready() -> void:
@@ -20,8 +22,9 @@ func _ready() -> void:
 ## Chamado pelo Rádio no exato momento em que o jogador PRESSIONA o ícone
 ## (button_down, não "pressed" — que só dispara ao soltar). O arraste
 ## começa junto com o clique, sem soltar o botão do mouse.
-func set_active_tower(scene: PackedScene) -> void:
+func set_active_tower(scene: PackedScene, slot_index: int) -> void:
 	active_tower_scene = scene
+	active_slot_index = slot_index
 	_start_placing()
 
 
@@ -29,12 +32,19 @@ func _start_placing() -> void:
 	if active_tower_scene == null:
 		return
 
+	var temp := active_tower_scene.instantiate()
+	active_tower_cost = temp.morale_cost if "morale_cost" in temp else 0
+
+	if not Game.can_afford(active_tower_cost):
+		temp.queue_free()
+		push_warning("PlacementManager: moral insuficiente pra essa torre (custa %d)." % active_tower_cost)
+		return
+
 	if is_placing and preview:
 		preview.queue_free()  # trocou de torre no meio do processo, descarta o fantasma antigo
 
 	is_placing = true
-
-	preview = active_tower_scene.instantiate()
+	preview = temp
 	preview.is_preview = true
 	add_child(preview)
 
@@ -82,6 +92,9 @@ func _is_valid_cell(cell: Vector2i) -> bool:
 
 
 func _place_recruta(cell: Vector2i) -> void:
+	if not Game.spend_for_tower(active_tower_cost):
+		return  # segurança: não deveria chegar aqui sem conseguir pagar
+
 	var recruta := active_tower_scene.instantiate()
 	get_parent().add_child(recruta)  # entra na árvore ANTES de setar global_position
 	recruta.global_position = _cell_to_global(cell)
@@ -89,11 +102,12 @@ func _place_recruta(cell: Vector2i) -> void:
 
 	recruta.placed_cell = cell
 	recruta.tower_scene_ref = active_tower_scene
+	recruta.slot_index = active_slot_index
 	recruta.removed.connect(_on_recruta_removed)
 
-	tower_placed.emit(active_tower_scene)
+	tower_placed.emit(active_tower_scene, active_slot_index)
 
 
-func _on_recruta_removed(cell: Vector2i, scene: PackedScene, cooldown: float) -> void:
+func _on_recruta_removed(cell: Vector2i, scene: PackedScene, slot_index: int, cooldown: float) -> void:
 	occupied_cells.erase(cell)  # libera a célula pra poder construir ali de novo
-	tower_removed.emit(scene, cooldown)
+	tower_removed.emit(scene, slot_index, cooldown)

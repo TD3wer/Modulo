@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bxu71ptkf5hn2" path="res://Scripts/Cutscene controller.gd" id="1_7vqed"]
 [ext_resource type="PackedScene" uid="uid://kticli83u6xj" path="res://Scenes/dialogue_box.tscn" id="1_bdho6"]
-[ext_resource type="PackedScene" uid="uid://bls2nwi65cm7k" path="res://Scenes/node_2d.tscn" id="2_7vqed"]
+[ext_resource type="PackedScene" uid="uid://bls2nwi65cm7k" path="res://Scenes/Stage01.tscn" id="2_7vqed"]
 [ext_resource type="Texture2D" uid="uid://co5i2vl8n04vv" path="res://Assets/Sprite-0001-Sheet.png" id="2_gn7my"]
 [ext_resource type="PackedScene" uid="uid://cehubnooxxpyw" path="res://Scenes/Ancora.tscn" id="3_7vqed"]
 
