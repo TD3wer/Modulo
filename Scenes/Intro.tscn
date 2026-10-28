@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ge1qxdmhyjdn" path="res://Scripts/intro.gd" id="1_jw2oo"]
 [ext_resource type="PackedScene" uid="uid://hnsh6k51bbav" path="res://Scenes/1_cutscene.tscn" id="2_5dcil"]
 [ext_resource type="FontFile" uid="uid://c4hmq6jebrlou" path="res://Assets/pixel_operator/PixelOperator8-Bold.ttf" id="3_iffca"]
-[ext_resource type="Script" uid="uid://dnug0vvrepwq7" path="res://typewriter_label.gd" id="4_o6jpy"]
+[ext_resource type="Script" uid="uid://dnug0vvrepwq7" path="res://Scripts/typewriter_label.gd" id="4_o6jpy"]
 [ext_resource type="AudioStream" uid="uid://bs6ibqdybpt1d" path="res://SFX/freesound_community-typewriter-machine-64191.mp3" id="5_iffca"]
 [ext_resource type="FontFile" uid="uid://c4ls55ik8e4rx" path="res://Assets/pixel_operator/PixelOperator8.ttf" id="6_qs2gn"]
 [ext_resource type="Texture2D" uid="uid://du0ctsyc6mc17" path="res://Assets/portraits/MaleOptionHover.png" id="7_iffca"]

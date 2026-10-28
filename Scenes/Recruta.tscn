@@ -277,8 +277,9 @@ size = Vector2(8, 8)
 
 [node name="Recruta" type="Node2D"]
 script = ExtResource("1_vedim")
-damage = 30
+damage = 1
 bullet_scene = ExtResource("2_l8r6d")
+morale_cost = 16
 shoot_sound = ExtResource("3_kxjxh")
 
 [node name="Muzzle" type="Marker2D" parent="."]

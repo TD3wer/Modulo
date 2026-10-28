@@ -192,7 +192,7 @@ func _on_intro_finished() -> void:
 		print("Radio: placement_manager é null, não deu pra conectar _on_first_tower_placed")
 
 
-func _on_first_tower_placed(_scene: PackedScene) -> void:
+func _on_first_tower_placed(_scene: PackedScene, _slot_index: int) -> void:
 	print("Radio: _on_first_tower_placed disparou")
 	_start_broadcast(_parse_lines(pre_wave_lines), _on_pre_wave_finished)
 

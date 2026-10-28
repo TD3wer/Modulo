@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://c3d4665tuguc0" path="res://Scenes/hud.tscn" id="8_v7gqg"]
 [ext_resource type="PackedScene" uid="uid://cvuajuutl6v47" path="res://Scenes/radio.tscn" id="10_hvaui"]
 [ext_resource type="Texture2D" uid="uid://ddrcc2h730pj6" path="res://Assets/portraits/recruit portrait.png" id="11_2ooml"]
-[ext_resource type="Script" uid="uid://3y3ealpffb0x" path="res://Scenes/screen_shake.gd" id="12_p20hg"]
+[ext_resource type="Script" uid="uid://3y3ealpffb0x" path="res://Scripts/screen_shake.gd" id="12_p20hg"]
 
 [sub_resource type="Curve2D" id="Curve2D_epypp"]
 _data = {
